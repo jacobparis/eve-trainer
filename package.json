@@ -1,0 +1,29 @@
+{
+  "name": "eve-trainer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "eve dev",
+    "build": "eve build",
+    "start": "eve start",
+    "info": "eve info",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@chat-adapter/state-pg": "^4.32.0",
+    "@chat-adapter/whatsapp": "^4.32.0",
+    "@neondatabase/serverless": "^1.0.1",
+    "eve": "^0.20.0",
+    "pg": "^8.22.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.4",
+    "@types/pg": "^8.20.0",
+    "typescript": "^5.8.3"
+  }
+}
