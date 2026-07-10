@@ -17,7 +17,7 @@ const cards = z.array(
 
 export default defineTool({
   description:
-    "Add atomic review cards from a question, image, or loaded card-generator skill. Every card requires a stable topic slug for pattern-specific mastery. Generated cards require the generator ID and duplicate generated questions are ignored.",
+    "Add atomic review cards from a question, image, or the generic practice-generator skill. Every card requires a stable topic slug for pattern-specific mastery. Generated cards are grouped and deduplicated by topic automatically.",
   inputSchema: z.discriminatedUnion("source", [
     z.object({
       externalUserId: z.string().optional(),
@@ -34,7 +34,6 @@ export default defineTool({
     z.object({
       externalUserId: z.string().optional(),
       source: z.literal("generator"),
-      generatorId: z.string().min(1),
       referenceId: z.string().uuid().optional(),
       cards,
     }),
@@ -46,7 +45,6 @@ export default defineTool({
     const added = await addCards({
       userId: user.id,
       source: input.source,
-      generatorId: input.source === "generator" ? input.generatorId : undefined,
       referenceId: input.referenceId,
       cards: input.cards,
     });

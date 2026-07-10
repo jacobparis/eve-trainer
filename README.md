@@ -5,7 +5,7 @@ An opinionated single-user WhatsApp learning agent built with Eve. It turns ques
 1. Questions and photos become atomic review cards immediately.
 2. A schedule starts review when a card is due.
 3. Review continues for as long as the learner wants.
-4. Eve skills generate varied topic-specific cards that enter the same SRS queue as every other card.
+4. One generic Eve skill turns any topic or example into varied cards that enter the same SRS queue as every other card.
 
 There are no fixed lesson batches, curriculum files, or confirmation queues. Every card has a stable topic slug for the pattern it tests and can link to retained textbook material. Neon stores references, cards, per-topic review attempts, progress, the active review, and Chat SDK delivery state. Eve handles the agent loop; the official Chat SDK WhatsApp Business Cloud adapter handles messages and authenticated media downloads directly from Meta.
 
@@ -150,8 +150,8 @@ If the webhook receives the message but there is no reply, check these in order:
 - `agent/channels/whatsapp-verification.ts` — serves Meta's GET verification challenge through the same adapter.
 - `agent/instructions.md` — the complete study behavior.
 - `agent/tools/add_cards.ts` — grows the card library.
-- `agent/tools/list_generated_cards.ts` — gives generator skills recent material to avoid.
-- `agent/skills/generate-adjective-agreement/SKILL.md` — an Eve-native example card generator.
+- `agent/tools/list_generated_cards.ts` — gives the generic generator recent material to avoid by topic.
+- `agent/skills/generate-practice/SKILL.md` — generates fresh practice from any topic or example item.
 - `agent/tools/review.ts` — starts, grades, skips, and continues review.
 - `agent/tools/inspect_library.ts` — browses the full catalog and reports topic mastery, trends, and weak cards.
 - `agent/tools/manage_cards.ts` — updates, retags, or deletes individual and active review cards.
@@ -165,11 +165,11 @@ WhatsApp only permits free-form outbound messages during its rolling customer-se
 
 ## Card generators
 
-Each generator is a packaged Eve skill under `agent/skills/`. Its frontmatter routes generation requests and declares the topic it trains; its Markdown body defines the objective, example, variation rules, and quality checks. The skill first calls `list_generated_cards`, then saves a batch through `add_cards` with `source: "generator"`. Generated cards are ordinary durable cards with their own SRS state.
+`generate-practice` is one packaged Eve skill for every topic. It identifies the capability tested by a supplied example or existing card, reuses that card's topic, inspects previously generated questions for the topic, and varies the surface scenario without changing the learning target. It then saves the batch through `add_cards` with `source: "generator"`. The runtime derives generation provenance and duplicate scope from each card's topic, so forks do not need topic-specific generator code or frontmatter. Generated cards remain ordinary durable cards with their own SRS state.
 
 ## Topic mastery
 
-`generator_id` records where a card came from; `topic` records the pattern it tests. Photo-derived, directly requested, and generated cards can therefore contribute evidence to the same topic. Each graded answer is appended to `review_attempts`. The initial mastery policy requires 10 distinct cards reviewed, 20 attempts in 30 days at 90% accuracy, and 5 cards retained at intervals of at least 14 days.
+`source` records whether a card was generated, while `topic` records the pattern it tests and scopes generated-card deduplication. Photo-derived, directly requested, and generated cards can therefore contribute evidence to the same topic. Each graded answer is appended to `review_attempts`. The initial mastery policy requires 10 distinct cards reviewed, 20 attempts in 30 days at 90% accuracy, and 5 cards retained at intervals of at least 14 days.
 
 ## Retained references
 

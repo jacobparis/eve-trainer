@@ -4,11 +4,11 @@ The learning loop is:
 
 `question or image -> add_cards -> cards -> review -> update due date -> next card`
 
-Generator skills add a second intake path without changing the SRS atom:
+The generic practice skill adds a second intake path without changing the SRS atom:
 
-`load generator skill -> list existing cards -> add_cards -> cards`
+`example or topic -> load generate-practice -> list generated topic cards -> add_cards -> cards`
 
-Generator skills own pedagogical instructions and examples. Typed tools own database access, provenance, and fingerprint-based duplicate prevention.
+The skill identifies the capability tested by an example and varies its surface form. Topic data stays on ordinary cards rather than in topic-specific code. Typed tools own database access, provenance, and topic-scoped fingerprint duplicate prevention.
 
 The delivery loop is:
 

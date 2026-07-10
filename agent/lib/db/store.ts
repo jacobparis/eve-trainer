@@ -46,7 +46,6 @@ export async function rememberWhatsAppThread(userId: string, threadId: string) {
 export async function addCards(input: {
   userId: string;
   source: Card["source"];
-  generatorId?: string;
   referenceId?: string;
   cards: Array<{ question: string; answer: string; topic: string }>;
 }): Promise<number> {
@@ -69,7 +68,7 @@ export async function addCards(input: {
         values (
           ${randomUUID()}, ${input.userId}, ${card.question}, ${card.answer}, ${card.topic},
           ${input.referenceId ?? null}, ${input.source},
-          ${input.generatorId ?? null}, ${cardFingerprint(card.question)}
+          ${card.topic}, ${cardFingerprint(card.question)}
         )
         on conflict do nothing
         returning id
@@ -96,9 +95,9 @@ export async function addCards(input: {
   return added;
 }
 
-export async function listGeneratedQuestions(input: {
+export async function listGeneratedQuestionsByTopic(input: {
   userId: string;
-  generatorId: string;
+  topic: string;
   limit: number;
 }): Promise<string[]> {
   const sql = getSql();
@@ -106,7 +105,8 @@ export async function listGeneratedQuestions(input: {
     select question
     from cards
     where user_id = ${input.userId}
-      and generator_id = ${input.generatorId}
+      and source = 'generator'
+      and topic = ${input.topic}
     order by created_at desc
     limit ${input.limit}
   `;
