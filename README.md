@@ -28,14 +28,9 @@ Use this repository as a GitHub template, then import the resulting repository i
 
    ```sh
    npm install
-   psql "$DATABASE_URL" -f db/schema.sql
+   psql "$DATABASE_URL" -f db/migrations/001_initial.sql
    npm run dev
    ```
-
-Existing installations should apply `db/migrations/004_whatsapp_channel.sql` after their previous migrations.
-Apply `db/migrations/005_card_generators.sql` to add generator provenance and duplicate protection.
-Apply `db/migrations/006_topic_mastery.sql` to add card topics and the review-attempt ledger.
-Apply `db/migrations/007_study_references.sql` to add retained textbook references and card provenance.
 
 ### Minimal WhatsApp setup with Meta's test number
 
